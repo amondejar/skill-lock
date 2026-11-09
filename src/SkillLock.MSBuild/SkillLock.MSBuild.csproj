@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The "SkillLock" package: no library, just build logic. It carries the published tool under tools/
+    and a buildTransitive targets file that runs it after package assets are resolved.
+  -->
+  <PropertyGroup>
+    <TargetFramework>$(SkillLockTargetFramework)</TargetFramework>
+    <PackageId>SkillLock</PackageId>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU5100;NU5128</NoWarn>
+    <Description>Checks the agent skills (SKILL.md) that your NuGet packages bring in on every build: prompt injection, hidden Unicode, remote code execution, secret exfiltration, and skills that are new or changed since they were reviewed in skills.lock.json. Findings appear as build warnings and errors in the IDE.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="buildTransitive/**" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="buildTransitive/SkillLock.targets" Pack="true" PackagePath="build/" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <Target Name="_SkillLockPublishTool">
+    <PropertyGroup>
+      <_SkillLockToolDir>$(MSBuildProjectDirectory)/$(IntermediateOutputPath)tool/</_SkillLockToolDir>
+    </PropertyGroup>
+    <MSBuild Projects="../SkillLock/SkillLock.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);PublishDir=$(_SkillLockToolDir);SkillLockTargetFramework=$(SkillLockTargetFramework);PackAsTool=false;UseAppHost=false" />
+    <ItemGroup>
+      <_SkillLockToolFile Include="$(_SkillLockToolDir)**/*" Exclude="$(_SkillLockToolDir)**/*.pdb" />
+      <None Include="@(_SkillLockToolFile)" Pack="true" PackagePath="tools/%(_SkillLockToolFile.RecursiveDir)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_SkillLockAddTool" BeforeTargets="_GetPackageFiles" DependsOnTargets="_SkillLockPublishTool" />
+
+</Project>

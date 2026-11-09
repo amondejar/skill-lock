@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <!-- net8.0 runs on every supported SDK (RollForward=Major). Override locally with -p:SkillLockTargetFramework=net10.0. -->
+    <SkillLockTargetFramework Condition="'$(SkillLockTargetFramework)' == ''">net8.0</SkillLockTargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>preview.1</VersionSuffix>
+    <Authors>Antonio Mondéjar</Authors>
+    <Copyright>© Antonio Mondéjar</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/amondejar/skill-lock</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/amondejar/skill-lock</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>agent-skills;skills;skill-md;security;supply-chain;nuget;msbuild;ai;agents;copilot;claude</PackageTags>
+  </PropertyGroup>
+</Project>

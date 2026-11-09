@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>$(SkillLockTargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Contoso.Markdown" Version="1.0.0" />
+    <PackageReference Include="Contoso.BuildTools" Version="1.0.0" />
+  </ItemGroup>
+</Project>
