@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="../Directory.Build.props" />
+  <PropertyGroup>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <PackageReadmeFile></PackageReadmeFile>
+    <IsPackable>false</IsPackable>
+    <VersionSuffix></VersionSuffix>
+  </PropertyGroup>
+</Project>

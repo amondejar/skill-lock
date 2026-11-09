@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>$(SkillLockTargetFramework)</TargetFramework>
+    <RollForward>Major</RollForward>
+    <AssemblyName>SkillLock</AssemblyName>
+    <RootNamespace>SkillLock</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <PackageId>SkillLock.Tool</PackageId>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>skilllock</ToolCommandName>
+    <Description>Audits the agent skills (SKILL.md) that arrive with your NuGet packages and your repository: finds prompt injection, hidden Unicode, remote code execution, secret access and exfiltration, and locks every skill by hash so a package update cannot change what your coding agent reads without review.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <InternalsVisibleTo Include="SkillLock.Tests" />
+  </ItemGroup>
+
+</Project>

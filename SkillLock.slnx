@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SkillLock/SkillLock.csproj" />
+    <Project Path="src/SkillLock.MSBuild/SkillLock.MSBuild.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SkillLock.Tests/SkillLock.Tests.csproj" />
+  </Folder>
+</Solution>

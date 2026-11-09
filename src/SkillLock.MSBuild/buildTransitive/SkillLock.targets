@@ -1,0 +1,48 @@
+<Project>
+
+  <!--
+    SkillLock: audits the agent skills (skills/<name>/SKILL.md) of the packages this project restores.
+
+    Properties:
+      SkillLockEnabled      true (default) | false
+      SkillLockFailOn       error (default): error findings fail the build, warnings stay warnings
+                            warning: warnings fail too | none: everything is a warning
+      SkillLockLockedMode   true: skills that are new or changed since skills.lock.json are errors.
+                            Defaults to true on CI (ContinuousIntegrationBuild, CI, TF_BUILD, GITHUB_ACTIONS), else false (warnings).
+      SkillLockFile         Path of the lock file (default: skills.lock.json in the project folder or a parent, up to the repo root)
+  -->
+
+  <PropertyGroup>
+    <SkillLockEnabled Condition="'$(SkillLockEnabled)' == ''">true</SkillLockEnabled>
+    <SkillLockFailOn Condition="'$(SkillLockFailOn)' == ''">error</SkillLockFailOn>
+    <SkillLockLockedMode Condition="'$(SkillLockLockedMode)' == '' and ('$(ContinuousIntegrationBuild)' == 'true' or '$(CI)' == 'true' or '$(TF_BUILD)' == 'True' or '$(GITHUB_ACTIONS)' == 'true')">true</SkillLockLockedMode>
+    <SkillLockLockedMode Condition="'$(SkillLockLockedMode)' == ''">false</SkillLockLockedMode>
+    <_SkillLockTool>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'tools', 'SkillLock.dll'))</_SkillLockTool>
+    <_SkillLockDotnet Condition="'$(DOTNET_HOST_PATH)' != ''">$(DOTNET_HOST_PATH)</_SkillLockDotnet>
+    <_SkillLockDotnet Condition="'$(_SkillLockDotnet)' == ''">dotnet</_SkillLockDotnet>
+  </PropertyGroup>
+
+  <Target Name="SkillLockVerify"
+          AfterTargets="ResolvePackageAssets"
+          Condition="'$(SkillLockEnabled)' == 'true' and '$(DesignTimeBuild)' != 'true' and Exists('$(ProjectAssetsFile)')">
+
+    <!-- Multi-targeting: the skills don't depend on the framework, so check once, in the first inner build. -->
+    <PropertyGroup>
+      <_SkillLockFirstFramework Condition="'$(TargetFrameworks)' != ''">$([System.String]::Copy('$(TargetFrameworks)').Split(';')[0].Trim())</_SkillLockFirstFramework>
+      <_SkillLockRun>true</_SkillLockRun>
+      <_SkillLockRun Condition="'$(_SkillLockFirstFramework)' != '' and '$(TargetFramework)' != '$(_SkillLockFirstFramework)'">false</_SkillLockRun>
+      <_SkillLockLockArgument Condition="'$(SkillLockFile)' != ''">--lock &quot;$(SkillLockFile)&quot;</_SkillLockLockArgument>
+    </PropertyGroup>
+
+    <Warning Condition="'$(_SkillLockRun)' == 'true' and !Exists('$(_SkillLockTool)')" Code="SKL999" Text="SkillLock: the tool was not found at $(_SkillLockTool); skills were not checked." />
+
+    <Exec Condition="'$(_SkillLockRun)' == 'true' and Exists('$(_SkillLockTool)')"
+          Command="&quot;$(_SkillLockDotnet)&quot; &quot;$(_SkillLockTool)&quot; verify --msbuild --assets &quot;$(ProjectAssetsFile)&quot; --locked $(SkillLockLockedMode) --fail-on $(SkillLockFailOn) $(_SkillLockLockArgument)"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          IgnoreExitCode="true"
+          EchoOff="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="high" />
+  </Target>
+
+</Project>
