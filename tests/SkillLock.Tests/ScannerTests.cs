@@ -31,7 +31,7 @@ public class ScannerTests
             Family emoji 👨‍👩‍👧 render fine. <!-- markdownlint-disable MD013 -->
             Configuration lives in appsettings.json, not in environment files.
             """);
-        Assert.Empty(findings.Where(f => f.Severity > Severity.Info));
+        Assert.DoesNotContain(findings, f => f.Severity > Severity.Info);
     }
 
     [Fact]
