@@ -15,6 +15,10 @@
     <RepositoryUrl>https://github.com/amondejar/skill-lock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>agent-skills;skills;skill-md;security;supply-chain;nuget;msbuild;ai;agents;copilot;claude</PackageTags>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="/" Visible="false" />
+  </ItemGroup>
 </Project>
